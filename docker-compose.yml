@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: personalverse
+      POSTGRES_PASSWORD: personalverse
+      POSTGRES_DB: personalverse
+    volumes:
+      - pv_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U personalverse"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://personalverse:personalverse@db:5432/personalverse
+      SECRET_KEY: ${SECRET_KEY:-change_this_to_a_long_random_value}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      CORS_ORIGINS: "*"
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - pv_uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8088:8088"
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3080:80"
+
+volumes:
+  pv_postgres_data:
+  pv_uploads:

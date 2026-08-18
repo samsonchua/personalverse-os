@@ -1,0 +1,251 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme tokens — four named themes, each remapping the same neutral ramp (white / slate-50..950)
+   so every existing `bg-slate-900`, `text-white`, `border-white/10` class across the app stays
+   semantically correct without editing each component. See tailwind.config.js for how these feed
+   in. "dark" is the default/original palette; the others follow its structure with different
+   surface/text tones. Selected via `data-theme` on <html> (see ThemeContext.tsx). */
+:root {
+  --color-white: 255 255 255;
+  --color-slate-50: 248 250 252;
+  --color-slate-100: 241 245 249;
+  --color-slate-200: 226 232 240;
+  --color-slate-300: 203 213 225;
+  --color-slate-400: 148 163 184;
+  --color-slate-500: 100 116 139;
+  --color-slate-600: 71 85 105;
+  --color-slate-700: 51 65 85;
+  --color-slate-800: 30 41 59;
+  --color-slate-900: 15 23 42;
+  --color-slate-950: 2 6 23;
+
+  --bg-primary: #0B0F19;
+  --glass-panel-bg: rgba(30, 41, 59, 0.55);
+  --glass-panel-bg-hover: rgba(30, 41, 59, 0.75);
+  --glass-input-bg: rgba(15, 23, 42, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --body-gradient-1: rgba(56, 189, 248, 0.07);
+  --body-gradient-2: rgba(139, 92, 246, 0.08);
+  --body-gradient-3: rgba(16, 185, 129, 0.05);
+
+  /* Accent text colors (used for links, active tabs, icons, highlighted figures). Only the
+     200/300/400 shades — the ones actually used as *text* — are theme-aware; 500+ (filled button/
+     badge backgrounds, gradients) stay literal since they already pair with their own contrasting
+     foreground. These dark-theme values are the stock Tailwind shades (vivid, reads well on dark);
+     light-surface themes below darken them for contrast instead of just inverting lightness. */
+  --color-cyan-200: 165 243 252;
+  --color-cyan-300: 103 232 249;
+  --color-cyan-400: 34 211 238;
+  --color-violet-200: 221 214 254;
+  --color-violet-300: 196 181 253;
+  --color-violet-400: 167 139 250;
+  --color-emerald-200: 167 243 208;
+  --color-emerald-300: 110 231 183;
+  --color-emerald-400: 52 211 153;
+  --color-rose-200: 254 205 211;
+  --color-rose-300: 253 164 175;
+  --color-rose-400: 251 113 133;
+  --color-amber-200: 253 230 138;
+  --color-amber-300: 252 211 77;
+  --color-amber-400: 251 191 36;
+  --color-cyanAccent: 56 189 248;
+  --color-violetAccent: 139 92 246;
+  --color-emeraldAccent: 16 185 129;
+  --color-roseAccent: 244 63 94;
+  --color-amberAccent: 245 158 11;
+}
+
+:root[data-theme="light"] {
+  /* Muted-text tier (400/500/600) shifted a notch darker than a naive ramp-inversion would give —
+     the original dark theme's secondary-text brightness doesn't translate to equal legibility on
+     a white surface, so labels/captions read washed-out unless corrected here. */
+  --color-white: 15 23 42;
+  --color-slate-50: 2 6 23;
+  --color-slate-100: 15 23 42;
+  --color-slate-200: 30 41 59;
+  --color-slate-300: 51 65 85;
+  --color-slate-400: 51 65 85;
+  --color-slate-500: 71 85 105;
+  --color-slate-600: 100 116 139;
+  --color-slate-700: 203 213 225;
+  --color-slate-800: 226 232 240;
+  --color-slate-900: 241 245 249;
+  --color-slate-950: 248 250 252;
+
+  --bg-primary: #F1F5F9;
+  --glass-panel-bg: rgba(255, 255, 255, 0.85);
+  --glass-panel-bg-hover: rgba(255, 255, 255, 0.96);
+  --glass-input-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(15, 23, 42, 0.1);
+  --body-gradient-1: rgba(56, 189, 248, 0.10);
+  --body-gradient-2: rgba(139, 92, 246, 0.10);
+  --body-gradient-3: rgba(16, 185, 129, 0.08);
+
+  /* Accent text darkened from the dark-theme shades above — the same lightness that pops on a
+     dark surface reads as washed-out/pastel on white, so these swap in roughly the 600-700
+     (800 for amber, the weakest-contrast hue) Tailwind shade instead of just inverting lightness. */
+  --color-cyan-200: 14 116 144;
+  --color-cyan-300: 14 116 144;
+  --color-cyan-400: 8 145 178;
+  --color-violet-200: 109 40 217;
+  --color-violet-300: 109 40 217;
+  --color-violet-400: 124 58 237;
+  --color-emerald-200: 4 120 87;
+  --color-emerald-300: 4 120 87;
+  --color-emerald-400: 5 150 105;
+  --color-rose-200: 190 18 60;
+  --color-rose-300: 190 18 60;
+  --color-rose-400: 225 29 72;
+  --color-amber-200: 146 64 14;
+  --color-amber-300: 146 64 14;
+  --color-amber-400: 180 83 9;
+  --color-cyanAccent: 8 145 178;
+  --color-violetAccent: 109 40 217;
+  --color-emeraldAccent: 4 120 87;
+  --color-roseAccent: 190 18 60;
+  --color-amberAccent: 146 64 14;
+}
+
+:root[data-theme="midnight"] {
+  /* A deeper, near-OLED-black dark variant — same structure as "dark" but with a richer, darker
+     surface and slightly higher-contrast text for low-light use. */
+  --color-white: 255 255 255;
+  --color-slate-50: 248 250 252;
+  --color-slate-100: 226 232 240;
+  --color-slate-200: 203 213 225;
+  --color-slate-300: 148 163 184;
+  --color-slate-400: 100 116 139;
+  --color-slate-500: 71 85 105;
+  --color-slate-600: 51 65 85;
+  --color-slate-700: 30 41 59;
+  --color-slate-800: 15 23 42;
+  --color-slate-900: 8 11 22;
+  --color-slate-950: 0 0 0;
+
+  --bg-primary: #050608;
+  --glass-panel-bg: rgba(15, 23, 42, 0.6);
+  --glass-panel-bg-hover: rgba(15, 23, 42, 0.82);
+  --glass-input-bg: rgba(5, 6, 8, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.07);
+  --body-gradient-1: rgba(56, 189, 248, 0.05);
+  --body-gradient-2: rgba(139, 92, 246, 0.06);
+  --body-gradient-3: rgba(16, 185, 129, 0.04);
+}
+
+:root[data-theme="sand"] {
+  /* A warm light variant — soft cream/stone surface and warm neutrals instead of the cool
+     blue-white + slate-gray of "light", for a softer, less clinical daytime look. */
+  --color-white: 28 25 23;
+  --color-slate-50: 12 10 9;
+  --color-slate-100: 28 25 23;
+  --color-slate-200: 41 37 36;
+  --color-slate-300: 68 64 60;
+  --color-slate-400: 68 64 60;
+  --color-slate-500: 87 83 78;
+  --color-slate-600: 120 113 108;
+  --color-slate-700: 214 211 209;
+  --color-slate-800: 231 229 228;
+  --color-slate-900: 245 245 244;
+  --color-slate-950: 250 250 249;
+
+  --bg-primary: #F5F1EA;
+  --glass-panel-bg: rgba(255, 253, 250, 0.85);
+  --glass-panel-bg-hover: rgba(255, 253, 250, 0.96);
+  --glass-input-bg: rgba(255, 253, 250, 0.9);
+  --glass-border: rgba(28, 25, 23, 0.1);
+  --body-gradient-1: rgba(56, 189, 248, 0.08);
+  --body-gradient-2: rgba(139, 92, 246, 0.08);
+  --body-gradient-3: rgba(16, 185, 129, 0.06);
+
+  /* Same darkened accent text as "light" — a warm cream surface has the same contrast problem
+     with pastel accent shades as pure white does. */
+  --color-cyan-200: 14 116 144;
+  --color-cyan-300: 14 116 144;
+  --color-cyan-400: 8 145 178;
+  --color-violet-200: 109 40 217;
+  --color-violet-300: 109 40 217;
+  --color-violet-400: 124 58 237;
+  --color-emerald-200: 4 120 87;
+  --color-emerald-300: 4 120 87;
+  --color-emerald-400: 5 150 105;
+  --color-rose-200: 190 18 60;
+  --color-rose-300: 190 18 60;
+  --color-rose-400: 225 29 72;
+  --color-amber-200: 146 64 14;
+  --color-amber-300: 146 64 14;
+  --color-amber-400: 180 83 9;
+  --color-cyanAccent: 8 145 178;
+  --color-violetAccent: 109 40 217;
+  --color-emeraldAccent: 4 120 87;
+  --color-roseAccent: 190 18 60;
+  --color-amberAccent: 146 64 14;
+}
+
+@layer base {
+  body {
+    background-color: var(--bg-primary);
+    color: rgb(var(--color-white));
+    background-image:
+      radial-gradient(at 15% 15%, var(--body-gradient-1) 0px, transparent 50%),
+      radial-gradient(at 85% 20%, var(--body-gradient-2) 0px, transparent 50%),
+      radial-gradient(at 50% 80%, var(--body-gradient-3) 0px, transparent 50%);
+    background-attachment: fixed;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+}
+
+/* Glassmorphism Design System Utility Classes */
+.glass-panel {
+  background: var(--glass-panel-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-panel-hover {
+  transition: all 0.2s ease-in-out;
+}
+.glass-panel-hover:hover {
+  background: var(--glass-panel-bg-hover);
+  border-color: rgba(56, 189, 248, 0.3);
+  box-shadow: 0 12px 40px 0 rgba(56, 189, 248, 0.15);
+  transform: translateY(-2px);
+}
+
+.glass-input {
+  background: var(--glass-input-bg);
+  border: 1px solid var(--glass-border);
+  color: rgb(var(--color-white));
+  backdrop-filter: blur(8px);
+}
+.glass-input:focus {
+  outline: none;
+  border-color: #38BDF8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+}
+.glow-violet {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.25);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.5);
+}
